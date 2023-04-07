@@ -56,7 +56,7 @@ namespace atn {
     /// with this config.  We track only those contexts pushed during
     /// execution of the ATN simulator.
     ///
-    /// Can be shared between multiple ANTConfig instances.
+    /// Can be shared between multiple ATNConfig instances.
     Ref<const PredictionContext> context;
 
     /**
