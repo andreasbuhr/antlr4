@@ -1069,6 +1069,11 @@ std::string ParserATNSimulator::getRuleName(size_t index) {
 
 Ref<ATNConfig> ParserATNSimulator::getEpsilonTarget(Ref<ATNConfig> const& config, const Transition *t, bool collectPredicates,
                                                     bool inContext, bool fullCtx, bool treatEofAsEpsilon) {
+  static auto alloc = []() {
+    std::pmr::polymorphic_allocator<ATNConfig> a;
+    return a;
+  }();
+
   switch (t->getTransitionType()) {
     case TransitionType::RULE:
       return ruleTransition(config, static_cast<const RuleTransition*>(t));
@@ -1083,7 +1088,7 @@ Ref<ATNConfig> ParserATNSimulator::getEpsilonTarget(Ref<ATNConfig> const& config
       return actionTransition(config, static_cast<const ActionTransition*>(t));
 
     case TransitionType::EPSILON:
-      return std::make_shared<ATNConfig>(*config, t->target);
+      return std::allocate_shared<ATNConfig>(alloc, *config, t->target);
 
     case TransitionType::ATOM:
     case TransitionType::RANGE:
