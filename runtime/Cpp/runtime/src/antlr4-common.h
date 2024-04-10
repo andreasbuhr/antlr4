@@ -21,13 +21,14 @@
 #include <limits>
 #include <map>
 #include <memory>
+#include <memory_resource>
 #include <set>
 #include <sstream>
 #include <stack>
 #include <string>
 #include <string_view>
-#include <typeinfo>
 #include <type_traits>
+#include <typeinfo>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -99,3 +100,23 @@
 
 #define INVALID_INDEX std::numeric_limits<size_t>::max()
 template<class T> using Ref = std::shared_ptr<T>;
+
+namespace antlrcpp {
+
+namespace detail {
+
+  template<typename T>
+  auto& GetGlobalAllocator(){
+    static std::pmr::unsynchronized_pool_resource resource;
+    static std::pmr::polymorphic_allocator<T> pmralloc((&resource));
+    return pmralloc;
+  }
+
+}
+
+template< class T, class... Args >
+std::shared_ptr<T> make_shared( Args&&... args ){
+  return std::allocate_shared<T, std::pmr::polymorphic_allocator<T>, Args...>(detail::GetGlobalAllocator<T>(), std::forward<Args>(args) ...);
+}
+
+} // namespace antlrcpp

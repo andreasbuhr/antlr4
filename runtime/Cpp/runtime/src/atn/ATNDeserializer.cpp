@@ -103,13 +103,13 @@ namespace {
   Ref<const LexerAction> lexerActionFactory(LexerActionType type, int data1, int data2) {
     switch (type) {
       case LexerActionType::CHANNEL:
-        return std::make_shared<LexerChannelAction>(data1);
+        return antlrcpp::make_shared<LexerChannelAction>(data1);
 
       case LexerActionType::CUSTOM:
-        return std::make_shared<LexerCustomAction>(data1, data2);
+        return antlrcpp::make_shared<LexerCustomAction>(data1, data2);
 
       case LexerActionType::MODE:
-        return std::make_shared< LexerModeAction>(data1);
+        return antlrcpp::make_shared< LexerModeAction>(data1);
 
       case LexerActionType::MORE:
         return LexerMoreAction::getInstance();
@@ -118,13 +118,13 @@ namespace {
         return LexerPopModeAction::getInstance();
 
       case LexerActionType::PUSH_MODE:
-        return std::make_shared<LexerPushModeAction>(data1);
+        return antlrcpp::make_shared<LexerPushModeAction>(data1);
 
       case LexerActionType::SKIP:
         return LexerSkipAction::getInstance();
 
       case LexerActionType::TYPE:
-        return std::make_shared<LexerTypeAction>(data1);
+        return antlrcpp::make_shared<LexerTypeAction>(data1);
 
       default:
         throw IllegalArgumentException("The specified lexer action type " + std::to_string(static_cast<size_t>(type)) +

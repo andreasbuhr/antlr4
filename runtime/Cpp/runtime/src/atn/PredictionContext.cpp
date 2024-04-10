@@ -88,7 +88,7 @@ namespace {
       updated = SingletonPredictionContext::create(std::move(parents[0]), context->getReturnState(0));
       contextCache.put(updated);
     } else {
-      updated = std::make_shared<ArrayPredictionContext>(std::move(parents), downCast<const ArrayPredictionContext*>(context.get())->returnStates);
+      updated = antlrcpp::make_shared<ArrayPredictionContext>(std::move(parents), downCast<const ArrayPredictionContext*>(context.get())->returnStates);
       contextCache.put(updated);
     }
 
@@ -124,7 +124,7 @@ namespace {
 
 }
 
-const Ref<const PredictionContext> PredictionContext::EMPTY = std::make_shared<SingletonPredictionContext>(nullptr, PredictionContext::EMPTY_RETURN_STATE);
+const Ref<const PredictionContext> PredictionContext::EMPTY = antlrcpp::make_shared<SingletonPredictionContext>(nullptr, PredictionContext::EMPTY_RETURN_STATE);
 
 //----------------- PredictionContext ----------------------------------------------------------------------------------
 
@@ -197,13 +197,13 @@ Ref<const PredictionContext> PredictionContext::merge(Ref<const PredictionContex
   // convert singleton so both are arrays to normalize
   Ref<const ArrayPredictionContext> left;
   if (aType == PredictionContextType::SINGLETON) {
-    left = std::make_shared<ArrayPredictionContext>(downCast<const SingletonPredictionContext&>(*a));
+    left = antlrcpp::make_shared<ArrayPredictionContext>(downCast<const SingletonPredictionContext&>(*a));
   } else {
     left = std::static_pointer_cast<const ArrayPredictionContext>(std::move(a));
   }
   Ref<const ArrayPredictionContext> right;
   if (bType == PredictionContextType::SINGLETON) {
-    right = std::make_shared<ArrayPredictionContext>(downCast<const SingletonPredictionContext&>(*b));
+    right = antlrcpp::make_shared<ArrayPredictionContext>(downCast<const SingletonPredictionContext&>(*b));
   } else {
     right = std::static_pointer_cast<const ArrayPredictionContext>(std::move(b));
   }
@@ -268,7 +268,7 @@ Ref<const PredictionContext> PredictionContext::mergeSingletons(Ref<const Single
       payloads[1] = a->returnState;
     }
     std::vector<Ref<const PredictionContext>> parents = { singleParent, singleParent };
-    auto c = std::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
+    auto c = antlrcpp::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
     if (mergeCache) {
       return mergeCache->put(a, b, std::move(c));
     }
@@ -281,7 +281,7 @@ Ref<const PredictionContext> PredictionContext::mergeSingletons(Ref<const Single
   if (a->returnState > b->returnState) { // sort by payload
     std::vector<size_t> payloads = { b->returnState, a->returnState };
     std::vector<Ref<const PredictionContext>> parents = { b->parent, a->parent };
-    auto c = std::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
+    auto c = antlrcpp::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
     if (mergeCache) {
       return mergeCache->put(a, b, std::move(c));
     }
@@ -289,7 +289,7 @@ Ref<const PredictionContext> PredictionContext::mergeSingletons(Ref<const Single
   }
   std::vector<size_t> payloads = {a->returnState, b->returnState};
   std::vector<Ref<const PredictionContext>> parents = { a->parent, b->parent };
-  auto c = std::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
+  auto c = antlrcpp::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
   if (mergeCache) {
     return mergeCache->put(a, b, std::move(c));
   }
@@ -312,12 +312,12 @@ Ref<const PredictionContext> PredictionContext::mergeRoot(Ref<const SingletonPre
     if (a == EMPTY) { // $ + x = [$,x]
       std::vector<size_t> payloads = { b->returnState, EMPTY_RETURN_STATE };
       std::vector<Ref<const PredictionContext>> parents = { b->parent, nullptr };
-      return std::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
+      return antlrcpp::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
     }
     if (b == EMPTY) { // x + $ = [$,x] ($ is always first if present)
       std::vector<size_t> payloads = { a->returnState, EMPTY_RETURN_STATE };
       std::vector<Ref<const PredictionContext>> parents = { a->parent, nullptr };
-      return std::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
+      return antlrcpp::make_shared<ArrayPredictionContext>(std::move(parents), std::move(payloads));
     }
   }
   return nullptr;
@@ -439,7 +439,7 @@ Ref<const PredictionContext> PredictionContext::mergeArrays(Ref<const ArrayPredi
   }
 
   combineCommonParents(m.parents);
-  auto c = std::make_shared<ArrayPredictionContext>(std::move(m));
+  auto c = antlrcpp::make_shared<ArrayPredictionContext>(std::move(m));
 
 #if TRACE_ATN_SIM == 1
     std::cout << "mergeArrays a=" << a->toString() << ",b=" << b->toString() << " -> " << c->toString() << std::endl;

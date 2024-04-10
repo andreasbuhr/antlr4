@@ -22,7 +22,7 @@ Ref<const SingletonPredictionContext> SingletonPredictionContext::create(Ref<con
     // someone can pass in the bits of an array ctx that mean $
     return std::dynamic_pointer_cast<const SingletonPredictionContext>(EMPTY);
   }
-  return std::make_shared<SingletonPredictionContext>(std::move(parent), returnState);
+  return antlrcpp::make_shared<SingletonPredictionContext>(std::move(parent), returnState);
 }
 
 bool SingletonPredictionContext::isEmpty() const {

@@ -31,13 +31,13 @@ LexerActionExecutor::LexerActionExecutor(std::vector<Ref<const LexerAction>> lex
 Ref<const LexerActionExecutor> LexerActionExecutor::append(const Ref<const LexerActionExecutor> &lexerActionExecutor,
                                                            Ref<const LexerAction> lexerAction) {
   if (lexerActionExecutor == nullptr) {
-    return std::make_shared<LexerActionExecutor>(std::vector<Ref<const LexerAction>>{ std::move(lexerAction) });
+    return antlrcpp::make_shared<LexerActionExecutor>(std::vector<Ref<const LexerAction>>{ std::move(lexerAction) });
   }
   std::vector<Ref<const LexerAction>> lexerActions;
   lexerActions.reserve(lexerActionExecutor->_lexerActions.size() + 1);
   lexerActions.insert(lexerActions.begin(), lexerActionExecutor->_lexerActions.begin(), lexerActionExecutor->_lexerActions.end());
   lexerActions.push_back(std::move(lexerAction));
-  return std::make_shared<LexerActionExecutor>(std::move(lexerActions));
+  return antlrcpp::make_shared<LexerActionExecutor>(std::move(lexerActions));
 }
 
 Ref<const LexerActionExecutor> LexerActionExecutor::fixOffsetBeforeMatch(int offset) const {
@@ -47,13 +47,13 @@ Ref<const LexerActionExecutor> LexerActionExecutor::fixOffsetBeforeMatch(int off
       if (updatedLexerActions.empty()) {
         updatedLexerActions = _lexerActions; // Make a copy.
       }
-      updatedLexerActions[i] = std::make_shared<LexerIndexedCustomAction>(offset, _lexerActions[i]);
+      updatedLexerActions[i] = antlrcpp::make_shared<LexerIndexedCustomAction>(offset, _lexerActions[i]);
     }
   }
   if (updatedLexerActions.empty()) {
     return shared_from_this();
   }
-  return std::make_shared<LexerActionExecutor>(std::move(updatedLexerActions));
+  return antlrcpp::make_shared<LexerActionExecutor>(std::move(updatedLexerActions));
 }
 
 const std::vector<Ref<const LexerAction>>& LexerActionExecutor::getLexerActions() const {

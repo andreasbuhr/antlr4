@@ -374,7 +374,7 @@ std::string SemanticContext::OR::toString() const {
 
 //------------------ SemanticContext -----------------------------------------------------------------------------------
 
-const Ref<const SemanticContext> SemanticContext::Empty::Instance = std::make_shared<Predicate>(INVALID_INDEX, INVALID_INDEX, false);
+const Ref<const SemanticContext> SemanticContext::Empty::Instance = antlrcpp::make_shared<Predicate>(INVALID_INDEX, INVALID_INDEX, false);
 
 Ref<const SemanticContext> SemanticContext::evalPrecedence(Recognizer * /*parser*/, RuleContext * /*parserCallStack*/) const {
   return shared_from_this();
@@ -389,7 +389,7 @@ Ref<const SemanticContext> SemanticContext::And(Ref<const SemanticContext> a, Re
     return a;
   }
 
-  Ref<AND> result = std::make_shared<AND>(std::move(a), std::move(b));
+  Ref<AND> result = antlrcpp::make_shared<AND>(std::move(a), std::move(b));
   if (result->getOperands().size() == 1) {
     return result->getOperands()[0];
   }
@@ -409,7 +409,7 @@ Ref<const SemanticContext> SemanticContext::Or(Ref<const SemanticContext> a, Ref
     return Empty::Instance;
   }
 
-  Ref<OR> result = std::make_shared<OR>(std::move(a), std::move(b));
+  Ref<OR> result = antlrcpp::make_shared<OR>(std::move(a), std::move(b));
   if (result->getOperands().size() == 1) {
     return result->getOperands()[0];
   }

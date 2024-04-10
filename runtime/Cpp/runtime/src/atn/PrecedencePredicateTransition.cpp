@@ -8,7 +8,7 @@
 using namespace antlr4::atn;
 
 PrecedencePredicateTransition::PrecedencePredicateTransition(ATNState *target, int precedence)
-  : Transition(TransitionType::PRECEDENCE, target), _predicate(std::make_shared<SemanticContext::PrecedencePredicate>(precedence)) {}
+  : Transition(TransitionType::PRECEDENCE, target), _predicate(antlrcpp::make_shared<SemanticContext::PrecedencePredicate>(precedence)) {}
 
 bool PrecedencePredicateTransition::isEpsilon() const {
   return true;

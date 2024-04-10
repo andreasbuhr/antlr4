@@ -46,7 +46,7 @@ size_t ProfilingATNSimulator::adaptivePredict(TokenStream *input, size_t decisio
   _decisions[decision].SLL_MinLook = _decisions[decision].SLL_MinLook == 0 ? SLL_k : std::min(_decisions[decision].SLL_MinLook, SLL_k);
   if (SLL_k > _decisions[decision].SLL_MaxLook) {
     _decisions[decision].SLL_MaxLook = SLL_k;
-    _decisions[decision].SLL_MaxLookEvent = std::make_shared<LookaheadEventInfo>(decision, nullptr, alt, input, _startIndex, _sllStopIndex, false);
+    _decisions[decision].SLL_MaxLookEvent = antlrcpp::make_shared<LookaheadEventInfo>(decision, nullptr, alt, input, _startIndex, _sllStopIndex, false);
   }
 
   if (_llStopIndex >= 0) {
@@ -55,7 +55,7 @@ size_t ProfilingATNSimulator::adaptivePredict(TokenStream *input, size_t decisio
     _decisions[decision].LL_MinLook = _decisions[decision].LL_MinLook == 0 ? LL_k : std::min(_decisions[decision].LL_MinLook, LL_k);
     if (LL_k > _decisions[decision].LL_MaxLook) {
       _decisions[decision].LL_MaxLook = LL_k;
-      _decisions[decision].LL_MaxLookEvent = std::make_shared<LookaheadEventInfo>(decision, nullptr, alt, input, _startIndex, _llStopIndex, true);
+      _decisions[decision].LL_MaxLookEvent = antlrcpp::make_shared<LookaheadEventInfo>(decision, nullptr, alt, input, _startIndex, _llStopIndex, true);
     }
   }
 
