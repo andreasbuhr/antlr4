@@ -25,6 +25,7 @@ using namespace antlrcpp;
 namespace {
 
   void combineCommonParents(std::vector<Ref<const PredictionContext>> &parents) {
+    return;
     std::unordered_set<Ref<const PredictionContext>> uniqueParents;
     uniqueParents.reserve(parents.size());
     for (const auto &parent : parents) {
