@@ -22,7 +22,7 @@ namespace {
 ATNConfigSet::ATNConfigSet() : ATNConfigSet(true) {}
 
 ATNConfigSet::ATNConfigSet(const ATNConfigSet &other)
-    : fullCtx(other.fullCtx), _configLookup(other._configLookup.bucket_count(), ATNConfigHasher{this}, ATNConfigComparer{this}) {
+    : fullCtx(other.fullCtx) {
   addAll(other);
   uniqueAlt = other.uniqueAlt;
   conflictingAlts = other.conflictingAlts;
@@ -31,7 +31,7 @@ ATNConfigSet::ATNConfigSet(const ATNConfigSet &other)
 }
 
 ATNConfigSet::ATNConfigSet(bool fullCtx)
-    : fullCtx(fullCtx), _configLookup(0, ATNConfigHasher{this}, ATNConfigComparer{this}) {}
+    : fullCtx(fullCtx) {}
 
 bool ATNConfigSet::add(const Ref<ATNConfig> &config) {
   return add(config, nullptr);
@@ -49,10 +49,13 @@ bool ATNConfigSet::add(const Ref<ATNConfig> &config, PredictionContextMergeCache
   if (config->getOuterContextDepth() > 0) {
     dipsIntoOuterContext = true;
   }
+  ATNConfigComparer comparer{this};
+  auto existing = std::find_if(configs.begin(), configs.end(), [&](const Ref<ATNConfig> &element) -> bool {
+    return comparer(element.get(), config.get());
+  });
 
-  auto existing = _configLookup.find(config.get());
-  if (existing == _configLookup.end()) {
-    _configLookup.insert(config.get());
+  //auto existing = _configLookup.find(config.get());
+  if (existing == configs.end()) {
     _cachedHashCode = 0;
     configs.push_back(config); // track order here
 
@@ -131,8 +134,6 @@ void ATNConfigSet::optimizeConfigs(ATNSimulator *interpreter) {
   if (_readonly) {
     throw IllegalStateException("This set is readonly");
   }
-  if (_configLookup.empty())
-    return;
 
   for (const auto &config : configs) {
     config->context = interpreter->getCachedContext(config->context);
@@ -181,7 +182,6 @@ void ATNConfigSet::clear() {
   }
   configs.clear();
   _cachedHashCode = 0;
-  _configLookup.clear();
 }
 
 bool ATNConfigSet::isReadonly() const {
@@ -190,7 +190,6 @@ bool ATNConfigSet::isReadonly() const {
 
 void ATNConfigSet::setReadonly(bool readonly) {
   _readonly = readonly;
-  LookupContainer(0, ATNConfigHasher{this}, ATNConfigComparer{this}).swap(_configLookup);
 }
 
 std::string ATNConfigSet::toString() const {

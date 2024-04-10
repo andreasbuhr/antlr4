@@ -132,10 +132,6 @@ namespace atn {
     virtual bool equals(const ATNConfig &lhs, const ATNConfig &rhs) const;
 
     using LookupContainer = FlatHashSet<ATNConfig*, ATNConfigHasher, ATNConfigComparer>;
-
-    /// All configs but hashed by (s, i, _, pi) not including context. Wiped out
-    /// when we go readonly as this set becomes a DFA state.
-    LookupContainer _configLookup;
   };
 
   inline bool operator==(const ATNConfigSet &lhs, const ATNConfigSet &rhs) { return lhs.equals(rhs); }
